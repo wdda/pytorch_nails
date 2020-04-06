@@ -27,7 +27,7 @@ def testing_forward():
     model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True, progress=True)
     # replace the classifier with a new one, that has
     # num_classes which is user-defined
-    num_classes = 2  # 1 class (person) + background
+    num_classes = 1  # 1 class (person) + background
     # get number of input features for the classifier
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
@@ -82,12 +82,12 @@ def show_box(image_name, folder):
 
 def get_model_instance_segmentation(num_classes):
     # load an instance segmentation model pre-trained pre-trained on COCO
-    model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True, progress=True, num_classes=num_classes)
 
     # get number of input features for the classifier
-    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    # in_features = model.roi_heads.box_predictor.cls_score.in_features
     # replace the pre-trained head with a new one
-    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+    # model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
     # now get the number of input features for the mask classifier
     # in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
@@ -150,5 +150,6 @@ def main():
         evaluate(model, data_loader_test, device=device)
 
     print("That's it!")
+
 
 main()
